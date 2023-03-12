@@ -8,7 +8,7 @@ import sys
 import threading
 
 class Chat:
-    def __init__(self, host=socket.gethostname(), port=5000):
+    def __init__(self, host='0.0.0.0', port=5000):
         s = socket.socket(type=socket.SOCK_DGRAM)
         s.settimeout(0.5)
         s.bind((host, port))
@@ -26,7 +26,7 @@ class Chat:
         self.__address = None
         threading.Thread(target=self._receive).start()
         while self.__running:
-            line = sys.stdin.readline().rstrip() + ' '
+            line = input('> ') + ' '
             # Extract the command and the param
             command = line[:line.index(' ')]
             param = line[line.index(' ')+1:].rstrip()
@@ -51,7 +51,7 @@ class Chat:
         tokens = param.split(' ')
         if len(tokens) == 2:
             try:
-                self.__address = (socket.gethostbyaddr(tokens[0])[0], int(tokens[1]))
+                self.__address = (tokens[0], int(tokens[1]))
                 print('Connecté à {}:{}'.format(*self.__address))
             except OSError:
                 print("Erreur lors de l'envoi du message.")
